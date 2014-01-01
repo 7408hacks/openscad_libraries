@@ -1,13 +1,13 @@
 /*parameters*/
-// preview[view:south west, tilt:side]
-
+// preview[view:south, tilt:top diagonal]
+/* [Global] */
 // Material type
-type="ABS"; //["ABS","PLA","PS","PP"]
+type="ABS"; //[ABS,PLA,PS,PP,OTHER]
 // Width of the symbol
-size=10; //[1:50]
+size=20; //[1:50]
 // Thickness of the symbol
 T=1; //[1:10]
-
+/* [Hidden] */
 use <write/Write.scad>
 Font = "write/Letters.dxf";
 
