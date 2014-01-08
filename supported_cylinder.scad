@@ -1,24 +1,25 @@
-support=1;
-teardrop_angle=45;
-support_cylinder_style="teardrop";
-
-t_ang=teardrop_angle;
-module supported_cylinder(r=1,h=1,z_rot=0, center=false)
+/*
+style:
+0 - plain cylinder
+1 - teardrop
+2 - trapezoid
+*/
+module supported_cylinder(r=1,h=1,z_rot=0, style=1, angle=45, center=false)
 {
 	union()
 	{
 		cylinder(r=r,h=h,center=center);
-		if (support)
+		if (style)
 		rotate([0,0,z_rot])
 		linear_extrude(height=h, center=center)
-		if(support_cylinder_style=="trapezoid")
+		if(style==1)
 		{
-			polygon([[r*sin(t_ang),r*cos(t_ang)], [r, r*(cos(t_ang)-tan(t_ang)*(1-sin(t_ang)))], [r, -r*(cos(t_ang)-tan(t_ang)*(1-sin(t_ang)))],[r*sin(t_ang),-r*cos(t_ang)]]);
-		}
-		else if(support_cylinder_style=="teardrop")
-		{
-			polygon([[r*sin(t_ang),r*cos(t_ang)],[r/sin(t_ang),0],[r*sin(t_ang),-r*cos(t_ang)]]);
+			polygon([[r*sin(angle),r*cos(angle)],[r/sin(angle),0],[r*sin(angle),-r*cos(angle)]]);
 		}		
+		else if(style==2)
+		{
+			polygon([[r*sin(angle),r*cos(angle)], [r, r*(cos(angle)-tan(angle)*(1-sin(angle)))], [r, -r*(cos(angle)-tan(angle)*(1-sin(angle)))],[r*sin(angle),-r*cos(angle)]]);
+		}
 	}
 }
 

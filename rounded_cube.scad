@@ -1,6 +1,6 @@
 use <7408/fillet.scad>
 
-module __rounded_cube(dim, r, rounded)
+module __rounded_cube(dim, r)
 {
 	difference()
 	{
@@ -36,15 +36,15 @@ module __rounded_cube(dim, r, rounded)
 	}
 }
 
-module rounded_cube(dim=[], r=[], center=false)
+module rounded_cube(size=[], r=[], center=false)
 {
 	if(center)
 	{
-		__rounded_cube(dim=dim, r=r, r2=r2);
+		__rounded_cube(dim=size, r=r);
 	}
 	else
 	{
-		translate(dim/2)
-		__rounded_cube(dim=dim, r=r);
+		translate(size/2)
+		__rounded_cube(dim=size, r=r);
 	}
 }

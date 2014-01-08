@@ -11,71 +11,64 @@ size=20; //[1:50]
 T=1; //[1:10]
 /* [Hidden] */
 use <write/Write.scad>
-Font = "write/Letters.dxf";
 
 if(demo)
 color("SteelBlue")
 {
-	recycling_symbol("ABS", 30, 2, [-25,40,0]);
-	recycling_symbol("PLA", 30, 2, [25,40,0]);
+	recycling_symbol("ABS", 30, 2, [-25,45,0]);
+	recycling_symbol("PLA", 30, 2, [25,45,0]);
 	recycling_symbol("PP", 20, 2, [-35,0,0]);
 	recycling_symbol("PS", 20, 2, [0,0,0]);
 	recycling_symbol("OTHER", 20, 2, [35,0,0]);
 }
 else
-	color("SteelBlue") recycling_symbol(type, size, T);
+	color("SteelBlue") recycling_symbol(type, size, T, $fn=40);
 
-module recycling_symbol(type="ABS", size=10, h=1, pos=[], rot=[])
+
+module recycling_symbol(type="ABS", size=10, h=1, pos=[], rot=[],$fn=40)
 {
-	symbol_h=2;
-	carve_h=symbol_h*2;
-	fontsize_number=12;
-	fontsize_letters=12;
 	code=(type=="ABS"?"9":type=="PS"?"6":type=="PP"?"5":"7");
-	L=len(type);
-	
-	translate(pos) rotate(rot) 
-	scale([size/32, size/32, h/2]) translate([0,3,0]) // center
+	translate(pos) rotate(rot)
+	scale([size/10,size/10,h])
+	union()
 	{
-		for(i=[0:L])
-			translate([10*(i-L/2+1/2),-18,symbol_h/2]) write(type[i], t=symbol_h, h=fontsize_letters, center=true, font=Font);
-		translate([0,2,symbol_h/2]) write(code, t=symbol_h, h=fontsize_number, center=true, font=Font);
+		for(i=[0,120,240])
+			rotate(a=[0,0,i])
+			__r_s_arrow();
+		translate([0,0,0.5])
+			write(code, t=1, h=4, center=true);
+		translate([0.5,-7,0.5])
+			write(type, t=1, h=4, space=1.2, center=true);
+	}
+}
+
+module __r_s_arrow()
+{
+	width=0.8;
+	y=sqrt(3)/3*6;
+	arr_y=-y/2-2+width/2;
+	linear_extrude(height=1)
+	union()
+	{
 		difference()
 		{
-			union()
-			{
-				difference()
-				{
-					__rec_triang(4,symbol_h,0);
-					__rec_triang(2,carve_h,-1);
-				}
-				translate([3.5,-7.25,symbol_h/2]) cube(size=[3,8,symbol_h],center=true);
-				translate([8.5,5.75,symbol_h/2]) rotate([0,0,122]) cube(size=[3,8,symbol_h],center=true);
-				translate([-10.75,2,symbol_h/2]) rotate([0,0,-122]) cube(size=[3,8,symbol_h],center=true);
-			}
-			__rec_arrow(carve_h, [0,-7.5,symbol_h/2], []); //Lower Arrow Head
-			__rec_arrow(carve_h, [10.5,3,symbol_h/2], [0,0,122]); //Right Arrow Head
-			__rec_arrow(carve_h, [-9.25,5,symbol_h/2], [0,0,-122]); //Left Arrow Head
+			__r_s_rounded_triangle(y,2,1);
+			__r_s_rounded_triangle(y,2-width);
+			translate([0,-5,0])
+				square([6,12]);
+			rotate([0,0,60])
+			translate([-1.5,0,0])
+				square([6,7]);
 		}
+		polygon(points=[[0.5,arr_y],[1.8,arr_y-1.1],[1.8,arr_y+1.1]]);
 	}
 }
 
-module __rec_triang(r, h, z)
+module __r_s_rounded_triangle(y,r)
 {
 	hull()
-	{
-		translate([0,14,z]) cylinder(r=r, h=h);
-		translate([12,-4.5,z]) cylinder(r=r, h=h);
-		translate([-12,-4.5,z]) cylinder(r=r, h=h);
-	}
-}
-
-module __rec_arrow(carve_h,pos,rot)
-{
-	translate(pos) rotate(rot) union()
-	{
-			translate([-1,0,0]) cube(size=[3,8,carve_h], center=true);
-			translate([1.75,-2.25,0]) rotate([0,0,40]) cube(size=[3,8,carve_h],center=true);
-			translate([1.75,2.25,0]) rotate([0,0,-40]) cube(size=[3,8,carve_h],center=true);
-	}
+	for(i=[0,120,240])
+		rotate(a=[0,0,i])
+		translate([0,y,0])
+			circle(r=r);
 }
